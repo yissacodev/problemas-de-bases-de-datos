@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Problema 1.2</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="../Assets/css/style.css">
+</head>
+<body>
+    
+    <div class="container-fluid p-4">
+        <div class="row d-flex flex-column flex-md-row p-4">
+            <div class="col-12 col-md-6 mb-5 mb-md-2">
+                <div class="text-exercise">
+                    <h2 class="display-3">Problema 1.2</h2>
+                    <p class="text-justify">
+                        Se desea diseñar una base de datos para una Universidad que contenga información sobre los alumnos, las asignaturas y las carreras que pueden estudiar.
+                    </p>
+                    <div class="text-justify">
+                        <p>Construir un modelo E-R y pasarlo posteriormente a un esquema
+                            relacional teniendo en cuenta las siguientes restricciones.
+                        </p>
+                        <ul>
+                            <li>• Un alumno puede estar matnculado en muchas asignaturas</li>
+                            <li>• Una asignatura sólo puede pertenecer a una sola carrera.</li>
+                            <li>• Una carrera puede tener muchas asignaturas</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="er-model ">
+                    <h3>Diagrama Entidad - Relacion</h3>
+                    <img src="modelo/problema1.2.drawio.png" alt="">
+                </div>
+                <div class="relacional-model">
+                    <h3>Modelo relacional</h3>
+                    <img src="modelo/modelo_relacional_universidad_db.png" alt="" width="130px">
+                </div>
+
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="code_container">
+                    <h2>Script</h2>
+                    <pre>
+                        <code>
+    /* Definiciones de tablas*/
+    CREATE DATABASE universidad_db;
+
+USE universidad_db;
+
+CREATE TABLE IF NOT EXISTS ALUMNOS(
+	cod_alumno INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	nombre VARCHAR(100) NOT NULL COMMENT "Nombre de alumno",
+	apellido VARCHAR(100) NOT NULL COMMENT "Apellido de alumno",
+	domicilio VARCHAR(50) DEFAULT "" COMMENT "Direccion de alumno",
+	creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Fecha de creación de registros",
+  	modificado TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Fecha de actualización de registros"
+) ENGINE = InnoDB DEFAULT CHARSET "utf8mb4" COMMENT "Tabla de alumnos de la universidad";
+
+CREATE TABLE IF NOT EXISTS ASIGNATURAS(
+	cod_asignatura INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT "Código de asignatura",
+	nombre VARCHAR(100) NOT NULL COMMENT "Nombre de asignatura",
+	curso VARCHAR(100) NOT NULL COMMENT "Curso o grado de la asignatura",
+	creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Fecha de creación de registros",
+  	modificado TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Fecha de actualización de registros"
+)ENGINE = InnoDB DEFAULT CHARSET "utf8mb4" COMMENT "Tabla de asignaturas de la universidad";
+
+CREATE TABLE IF NOT EXISTS CALIFICACIONES(
+	cod_alumno INT UNSIGNED NOT NULL COMMENT "Referencia a un alumno",
+	cod_asignatura INT UNSIGNED NOT NULL COMMENT "Referencia a una asignatura",
+	nota DECIMAL(3,2) DEFAULT 0.00 COMMENT "Calificacion individual",
+	creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Fecha de creación de registros",
+  	modificado TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Fecha de actualización de registros",
+	PRIMARY KEY(cod_alumno, cod_asignatura)
+) ENGINE = InnoDB DEFAULT CHARSET "utf8mb4" COMMENT "Tabla de calificaciones de la universidad";
+
+
+CREATE TABLE IF NOT EXISTS CARRERAS(
+	cod_carrera INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Código de carrera",
+	nombre VARCHAR(50) NOT NULL COMMENT "Nombre de carrera",
+	duración VARCHAR(20) NOT NULL COMMENT "Duración de la carrera",
+	creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Fecha de creación de registros",
+ 	modificado TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Fecha de actualización de registros"
+)
+
+CREATE TABLE IF NOT EXISTS ASIGNATURAS_ASOCIADAS(
+	cod_carrera INT UNSIGNED NOT NULL COMMENT "Referencia a una carrera",
+	cod_asignatura INT UNSIGNED NOT NULL COMMENT "Referencia a una asignatura",
+	creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Fecha de creación de registros",
+ 	modificado TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Fecha de actualización de registros",
+	PRIMARY KEY(cod_carrera, cod_asignatura)
+);
+
+/* Constraints de calificaciones*/
+ALTER TABLE CALIFICACIONES 
+ADD CONSTRAINT FK_calificaciones_alumnos 
+FOREIGN KEY(cod_alumno) 
+REFERENCES ALUMNOS(cod_alumno)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE CALIFICACIONES 
+ADD CONSTRAINT FK_calificaciones_asignaturas 
+FOREIGN KEY(cod_asignatura) 
+REFERENCES ASIGNATURAS(cod_asignatura)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+/* Constraints de asignaturas asociadas*/
+ALTER TABLE ASIGNATURAS_ASOCIADAS 
+ADD CONSTRAINT FK_asigasociadas_asignaturas
+FOREIGN KEY(cod_asignatura) 
+REFERENCES ASIGNATURAS(cod_asignatura)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE ASIGNATURAS_ASOCIADAS 
+ADD CONSTRAINT FK_asigasociadas_carreras
+FOREIGN KEY(cod_carrera) 
+REFERENCES CARRERAS(cod_carrera)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+    
+    
+    
+    
+    
+                        </code>
+                    </pre>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
