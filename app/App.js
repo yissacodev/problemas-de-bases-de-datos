@@ -1,20 +1,26 @@
 import { Navbar } from "./components/Navbar.js";
+import { Hero } from "./components/Hero.js";
+
 // import { Header } from "./components/Header.js";
 // import { Loader } from "./components/Loader.js";
 // import { Main } from "./components/Main.js";
 
-// import { Router } from "./components/Router.js";
+import { Router } from "./components/Router.js";
+import { Header } from "./components/Header.js";
+
+import { Exercises } from "./components/Exercises.js";
 
 export function App () {
 
     const $root = document.getElementById("root");
 
     $root.innerHTML = null; /*Para que no se duplique la cabecera de la página */
-    $root.appendChild(Navbar());
+    $root.appendChild(Header());
+    $root.appendChild(Exercises());
     // $root.appendChild(Main());
     // $root.appendChild(Loader());
 
-    // Router();
+    Router();
     /*
     Generar un error para ver el estilo del texto del error
 
